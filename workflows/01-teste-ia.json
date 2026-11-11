@@ -22,7 +22,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        672,
+        896,
         0
       ],
       "id": "c5d0410b-fa21-4c8b-adaa-0741320fbeb5",
@@ -36,7 +36,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.2,
       "position": [
-        608,
+        832,
         208
       ],
       "id": "daf8711c-4dcd-43be-abd2-23ae10974256",
@@ -60,7 +60,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1040,
+        1264,
         0
       ],
       "id": "2e18ba24-b610-419e-a381-db6202dc42b7",
@@ -81,7 +81,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        800,
+        1024,
         208
       ],
       "id": "4af795c7-6723-4f77-b990-fa70816a66f7",
@@ -115,7 +115,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.4,
       "position": [
-        448,
+        672,
         0
       ],
       "id": "52887b8e-4d2e-4a1f-b915-7dec16448f4d",
@@ -123,16 +123,49 @@
     },
     {
       "parameters": {
-        "jsCode": "const anuncios = [\n  { anuncio: 'Caixa de direção Gol G5', campanha: 'Escala', preco: 800, cliques: 85, investimento: 120, vendas_ads: 1600, roas_minimo: 5 },\n  { anuncio: 'Caixa de direção Palio',  campanha: 'Escala', preco: 650, cliques: 60, investimento: 150, vendas_ads: 650,  roas_minimo: 5.5 },\n  { anuncio: 'Caixa de direção Celta',  campanha: 'Teste',  preco: 700, cliques: 12, investimento: 20,  vendas_ads: 0,    roas_minimo: 5 },\n];\n\nconst PISO_CLIQUES = 30;\n\nreturn anuncios.map(a => {\n  const roas_real = a.investimento > 0\n    ? Number((a.vendas_ads / a.investimento).toFixed(2))\n    : 0;\n\n  let status;\n  if (a.cliques < PISO_CLIQUES) status = 'dados_insuficientes';\n  else if (roas_real >= a.roas_minimo) status = 'saudavel';\n  else status = 'abaixo_do_minimo';\n\n  return { json: { ...a, roas_real, status } };\n});"
+        "jsCode": "const PISO_CLIQUES = 30;\n\n// Planilha em pt-BR pode mandar \"5,5\" como texto: converte para número\nconst num = (v) => {\n  if (typeof v === 'number') return v;\n  const s = String(v ?? '').trim();\n  return s.includes(',') ? Number(s.replace(/\\./g, '').replace(',', '.')) : Number(s);\n};\n\nreturn $input.all().map(item => {\n  const r = item.json;\n  const a = {\n    anuncio: r.anuncio,\n    campanha: r.campanha,\n    preco: num(r.preco),\n    cliques: num(r.cliques),\n    investimento: num(r.investimento),\n    vendas_ads: num(r.vendas_ads),\n    roas_minimo: num(r.roas_minimo),\n  };\n\n  const roas_real = a.investimento > 0\n    ? Number((a.vendas_ads / a.investimento).toFixed(2))\n    : 0;\n\n  let status;\n  if (a.cliques < PISO_CLIQUES) status = 'dados_insuficientes';\n  else if (roas_real >= a.roas_minimo) status = 'saudavel';\n  else status = 'abaixo_do_minimo';\n\n  return { json: { ...a, roas_real, status } };\n});"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        224,
+        448,
         0
       ],
       "id": "87fd11e4-6b6c-407d-bd86-f3ec72d94554",
       "name": "Code"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kbn499lCxThq3j0qJPYhHJcEQlwLeOXT4Jaqq8UlSow",
+          "mode": "list",
+          "cachedResultName": "Mercado Ads - Demo",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kbn499lCxThq3j0qJPYhHJcEQlwLeOXT4Jaqq8UlSow/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "anuncios",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kbn499lCxThq3j0qJPYhHJcEQlwLeOXT4Jaqq8UlSow/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "f9810c9a-c5a4-4bc1-b3af-e22c0e6213f6",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "gHzDCk2NvADygFuX",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -141,7 +174,7 @@
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Get row(s) in sheet",
             "type": "main",
             "index": 0
           }
@@ -202,6 +235,17 @@
           }
         ]
       ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -209,7 +253,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "df279be0-bf20-4877-a049-4489d8b3a4b6",
+  "versionId": "05bf93ba-dbf7-4509-90b1-8d2a87beb506",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "273beb66f70e114ffa2b73a068704a4b2db0b4c791c1df4a2103b87573c6cff9"

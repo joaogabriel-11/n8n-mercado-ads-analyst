@@ -64,7 +64,7 @@ Cada anúncio recebe um status calculado **por código, não por IA**:
 - **Janela que respeita a atribuição.** A análise usa 14 dias terminando 3 dias atrás, porque vendas atribuídas a anúncios demoram a aparecer.
 - **Humano no controle.** O sistema sugere; quem decide sou eu. A decisão é registrada no histórico para medir, depois, se as sugestões funcionaram.
 - **Tolerância a falhas.** Retry nas chamadas de API, alerta de erro com dica de diagnóstico no Telegram e, se a IA falhar, o relatório sai mesmo assim (sem a análise).
-- **Segredos fora dos workflows.** Tokens, IDs e configurações ficam em Data tables do n8n. Os JSONs versionados não contêm dados sensíveis, e um *pre-commit hook* bloqueia commits com tokens.
+- **Segredos fora dos workflows.** Tokens, IDs e configurações ficam em Data tables do n8n, e o script de exportação remove metadados pessoais. Assim, os JSONs versionados não contêm dados sensíveis.
 
 ## 🗂️ Workflows
 

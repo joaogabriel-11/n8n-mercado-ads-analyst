@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T17:10:01.676Z",
+  "updatedAt": "2026-11-12T18:48:10.752Z",
   "createdAt": "2026-11-11T18:21:04.528Z",
   "id": "Ji9r8GKP8NS4lHVN",
   "name": "01 - Teste IA",
@@ -39,7 +39,7 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-3.5-flash",
+        "modelName": "models/gemini-3.5-flash-lite",
         "options": {
           "temperature": 0.2
         }
@@ -346,9 +346,9 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "d72ec081-9eef-4463-bd44-b77f50038912",
+  "versionId": "14d80b5d-2622-4e84-a929-c346eb41e40b",
   "activeVersionId": null,
-  "versionCounter": 111,
+  "versionCounter": 114,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],

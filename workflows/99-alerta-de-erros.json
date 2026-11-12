@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T17:06:34.586Z",
+  "updatedAt": "2026-11-12T18:41:29.349Z",
   "createdAt": "2026-11-12T16:33:45.329Z",
   "id": "lxBL1nSRFEtG95Qd",
   "name": "99 - Alerta de erros",
@@ -114,7 +114,11 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
   "staticData": null,
   "meta": {
@@ -124,7 +128,7 @@
   "pinData": {},
   "versionId": "0f4a00bf-b409-425f-a883-adf7a9a8b7a5",
   "activeVersionId": "0f4a00bf-b409-425f-a883-adf7a9a8b7a5",
-  "versionCounter": 14,
+  "versionCounter": 15,
   "triggerCount": 0,
   "sourceWorkflowId": null,
   "tags": [],

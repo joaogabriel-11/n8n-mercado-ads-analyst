@@ -85,7 +85,9 @@ Cada anúncio recebe um status calculado **por código, não por IA**:
 1. **Suba o n8n**
    ```bash
    docker volume create n8n_data
-   docker run -d --name n8n --restart unless-stopped -p 5678:5678 -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n
+   docker run -d --name n8n --restart unless-stopped -p 5678:5678 \
+  -e GENERIC_TIMEZONE=America/Sao_Paulo -e TZ=America/Sao_Paulo \
+  -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n
    ```
 2. **Crie as Data tables** no n8n:
    - `ml_auth`: `client_id`, `client_secret`, `access_token`, `refresh_token`, `expires_at` (preencha só as duas primeiras)

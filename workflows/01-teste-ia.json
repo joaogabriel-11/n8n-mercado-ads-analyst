@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        16,
+        80
       ],
       "id": "f6125aa7-3e2b-4ae4-a5d6-b8490c0fa511",
       "name": "When clicking ‘Execute workflow’"
@@ -15,9 +15,12 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Você é um analista de Mercado Ads (Mercado Livre). Nas campanhas por\nROAS alvo NÃO existe escolha de palavras-chave nem lance por termo.\nAs únicas ações possíveis são:\n- manter\n- subir_para_escala\n- descer_para_teste\n- pausar_anuncio\n- ajustar_roas_alvo\n- revisar_preco\n\nAnúncio: {{ $json.anuncio }}\nCampanha atual: {{ $json.campanha }}\nCliques: {{ $json.cliques }}\nROAS real (já calculado, não recalcule): {{ $json.roas_real }}x\nROAS mínimo: {{ $json.roas_minimo }}x\n\nEscolha UMA ação da lista e justifique em até 2 frases.\nResponda em texto simples, sem Markdown.",
+        "text": "=Você é um analista de Mercado Ads (Mercado Livre). Nas campanhas por\nROAS alvo NÃO existe escolha de palavras-chave nem lance por termo.\nAs únicas ações possíveis são:\n- manter\n- subir_para_escala\n- descer_para_teste\n- pausar_anuncio\n- ajustar_roas_alvo\n- revisar_preco\n\nAnúncio: {{ $json.anuncio }}\nCampanha atual: {{ $json.campanha }}\nCliques: {{ $json.cliques }}\nROAS real (já calculado, não recalcule): {{ $json.roas_real }}x\nROAS mínimo: {{ $json.roas_minimo }}x\nSituação detectada pelo sistema: {{ $json.status }}\n\nEscolha UMA ação da lista e justifique em até 2 frases.\nResponda em texto simples, sem Markdown.",
         "hasOutputParser": true,
-        "batching": {}
+        "batching": {
+          "batchSize": 1,
+          "delayBetweenBatches": 3000
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
@@ -30,8 +33,10 @@
     },
     {
       "parameters": {
-        "modelName": "models/gemini-3.1-flash-lite",
-        "options": {}
+        "modelName": "models/gemini-3.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.2,
@@ -51,7 +56,7 @@
     {
       "parameters": {
         "chatId": "6704486069",
-        "text": "=📊 {{ $('Code').item.json.anuncio }}\nCampanha: {{ $('Code').item.json.campanha }}\nROAS real: {{ $('Code').item.json.roas_real }}x (mínimo: {{ $('Code').item.json.roas_minimo }}x)\nCliques: {{ $('Code').item.json.cliques }}\nAção sugerida: {{ $json.output.acao }}\nMotivo: {{ $json.output.justificativa }}",
+        "text": "={{ $json.mensagem }}",
         "additionalFields": {
           "appendAttribution": false,
           "parse_mode": "HTML"
@@ -60,7 +65,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1264,
+        1456,
         0
       ],
       "id": "2e18ba24-b610-419e-a381-db6202dc42b7",
@@ -106,9 +111,19 @@
                 "operation": "equals",
                 "name": "filter.operator.equals"
               }
+            },
+            {
+              "id": "00b63867-ee87-4943-8e27-cb53571b3199",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "candidato_escala",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
@@ -123,7 +138,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const PISO_CLIQUES = 30;\n\n// Planilha em pt-BR pode mandar \"5,5\" como texto: converte para número\nconst num = (v) => {\n  if (typeof v === 'number') return v;\n  const s = String(v ?? '').trim();\n  return s.includes(',') ? Number(s.replace(/\\./g, '').replace(',', '.')) : Number(s);\n};\n\nreturn $input.all().map(item => {\n  const r = item.json;\n  const a = {\n    anuncio: r.anuncio,\n    campanha: r.campanha,\n    preco: num(r.preco),\n    cliques: num(r.cliques),\n    investimento: num(r.investimento),\n    vendas_ads: num(r.vendas_ads),\n    roas_minimo: num(r.roas_minimo),\n  };\n\n  const roas_real = a.investimento > 0\n    ? Number((a.vendas_ads / a.investimento).toFixed(2))\n    : 0;\n\n  let status;\n  if (a.cliques < PISO_CLIQUES) status = 'dados_insuficientes';\n  else if (roas_real >= a.roas_minimo) status = 'saudavel';\n  else status = 'abaixo_do_minimo';\n\n  return { json: { ...a, roas_real, status } };\n});"
+        "jsCode": "const PISO_CLIQUES = 30;\n\n// Planilha em pt-BR pode mandar \"5,5\" como texto: converte para número\nconst num = (v) => {\n  if (typeof v === 'number') return v;\n  const s = String(v ?? '').trim();\n  return s.includes(',') ? Number(s.replace(/\\./g, '').replace(',', '.')) : Number(s);\n};\n\nreturn $input.all().map(item => {\n  const r = item.json;\n  const a = {\n    anuncio: r.anuncio,\n    campanha: r.campanha,\n    preco: num(r.preco),\n    cliques: num(r.cliques),\n    investimento: num(r.investimento),\n    vendas_ads: num(r.vendas_ads),\n    roas_minimo: num(r.roas_minimo),\n  };\n\n  const roas_real = a.investimento > 0\n    ? Number((a.vendas_ads / a.investimento).toFixed(2))\n    : 0;\n\n  let status;\n  if (a.cliques < PISO_CLIQUES) status = 'dados_insuficientes';\n  else if (roas_real < a.roas_minimo) status = 'abaixo_do_minimo';\n  else if (a.campanha === 'Teste' && roas_real >= a.roas_minimo * 1.5) status = 'candidato_escala';\n  else status = 'saudavel';\n\n  return { json: { ...a, roas_real, status } };\n});"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -166,6 +181,39 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Escapa caracteres que quebram o modo HTML do Telegram\nconst esc = (t) => String(t ?? '')\n  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\nconst todos = $('Code').all().map(i => i.json);       // todos os anúncios\nconst filtrados = $('Filter').all().map(i => i.json); // os que foram para a IA\nconst ia = $input.all().map(i => i.json.output);      // respostas da IA (mesma ordem)\n\nconst atencao = filtrados.map((a, i) =>\n  `• <b>${esc(a.anuncio)}</b> (${a.campanha})\\n` +\n  `  ROAS ${a.roas_real}x | mín ${a.roas_minimo}x | ${a.cliques} cliques\\n` +\n  `  👉 <b>${ia[i].acao}</b>: ${esc(ia[i].justificativa)}`\n);\n\nconst saudaveis = todos\n  .filter(a => a.status === 'saudavel')\n  .map(a => `• ${esc(a.anuncio)}: ROAS ${a.roas_real}x`);\n\nconst insuficientes = todos\n  .filter(a => a.status === 'dados_insuficientes')\n  .map(a => `• ${esc(a.anuncio)}: ${a.cliques} cliques`);\n\nlet msg = `📊 <b>Relatório Mercado Ads, ${$now.toFormat('dd/MM/yyyy')}</b>\\n\\n`;\nmsg += `⚠️ <b>Ações sugeridas (${atencao.length})</b>\\n${atencao.join('\\n\\n') || 'Nenhuma'}\\n\\n`;\nmsg += `✅ <b>Saudáveis (${saudaveis.length})</b>\\n${saudaveis.join('\\n') || 'Nenhum'}\\n\\n`;\nmsg += `⏳ <b>Dados insuficientes (${insuficientes.length})</b>\\n${insuficientes.join('\\n') || 'Nenhum'}`;\n\nreturn [{ json: { mensagem: msg } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "0efc992f-4e72-4902-bfb3-18ac78ab07b0",
+      "name": "Montar resumo"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        16,
+        -80
+      ],
+      "id": "f59eff96-6056-4128-be5a-5d920694e763",
+      "name": "Schedule Trigger"
     }
   ],
   "pinData": {},
@@ -196,7 +244,7 @@
       "main": [
         [
           {
-            "node": "Send a text message",
+            "node": "Montar resumo",
             "type": "main",
             "index": 0
           }
@@ -246,14 +294,40 @@
           }
         ]
       ]
+    },
+    "Montar resumo": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
-  "versionId": "05bf93ba-dbf7-4509-90b1-8d2a87beb506",
+  "versionId": "cd42ce23-8c2e-4694-92de-dd18aa4a311d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "273beb66f70e114ffa2b73a068704a4b2db0b4c791c1df4a2103b87573c6cff9"

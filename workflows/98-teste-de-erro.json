@@ -1,0 +1,88 @@
+{
+  "updatedAt": "2026-11-12T16:43:35.77Z",
+  "createdAt": "2026-11-12T16:42:03.259Z",
+  "id": "Bvcb1wJTvQo4HYDl",
+  "name": "98 - Teste de erro",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c9635d44-74f5-4466-a173-10d35b2e58a2",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Erro de teste 401 unauthorized"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "68f221bb-c31e-4996-9b43-f7ccd360eb74",
+      "name": "Stop and Error"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "lxBL1nSRFEtG95Qd",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "b3a2c48a-ef46-4617-94ec-7532127f67a4",
+  "activeVersionId": null,
+  "versionCounter": 9,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "versionMetadata": {
+    "name": "Version b3a2c48a",
+    "description": ""
+  }
+}

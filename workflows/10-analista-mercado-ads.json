@@ -1,5 +1,11 @@
 {
+  "updatedAt": "2026-11-12T17:05:28.357Z",
+  "createdAt": "2026-11-12T13:16:33.724Z",
+  "id": "EzjZwwyHgcFC4oVD",
   "name": "10 - Analista Mercado Ads",
+  "description": null,
+  "active": true,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {},
@@ -25,11 +31,12 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        2240,
+        2464,
         -432
       ],
       "id": "49594db9-5fc2-4231-a7d7-2abfa7239aa3",
-      "name": "Basic LLM Chain"
+      "name": "Basic LLM Chain",
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -41,7 +48,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.2,
       "position": [
-        2176,
+        2400,
         -224
       ],
       "id": "7a4d0ace-b455-4b85-924b-ba0263e52519",
@@ -55,7 +62,7 @@
     },
     {
       "parameters": {
-        "chatId": "SEU_CHAT_ID",
+        "chatId": "={{ $('Ler config').first().json.chat_id }}",
         "text": "={{ $json.mensagem }}",
         "additionalFields": {
           "appendAttribution": false,
@@ -65,7 +72,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2224,
+        2448,
         80
       ],
       "id": "462ac1da-344b-4504-a5fd-ee2b1dbffc20",
@@ -86,7 +93,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        2368,
+        2592,
         -224
       ],
       "id": "8462e244-daac-4eed-8e3b-2fcd714ca6d8",
@@ -130,7 +137,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.4,
       "position": [
-        2016,
+        2240,
         -432
       ],
       "id": "fcb0e798-05ed-4afb-8ea5-bb6795a8b2a7",
@@ -143,7 +150,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2016,
+        2240,
         80
       ],
       "id": "2ce71148-e41b-4ce0-8bfd-021cec2f9870",
@@ -202,7 +209,7 @@
     },
     {
       "parameters": {
-        "url": "https://api.mercadolibre.com/advertising/MLB/advertisers/SEU_ADVERTISER_ID/product_ads/ads/search",
+        "url": "=https://api.mercadolibre.com/advertising/MLB/advertisers/{{ $('Ler config').first().json.advertiser_id }}/product_ads/ads/search",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -250,15 +257,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        1232,
+        1456,
         -192
       ],
       "id": "4dbd1fa2-2e09-42e9-b165-3844f00f60d4",
-      "name": "Buscar anúncios"
+      "name": "Buscar anúncios",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
-        "url": "https://api.mercadolibre.com/advertising/MLB/advertisers/SEU_ADVERTISER_ID/product_ads/campaigns/search",
+        "url": "=https://api.mercadolibre.com/advertising/MLB/advertisers/{{ $('Ler config').first().json.advertiser_id }}/product_ads/campaigns/search",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -302,11 +311,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        784,
+        1008,
         -192
       ],
       "id": "d53edc18-046d-4754-9af6-222a770a1ccb",
-      "name": "Buscar campanhas"
+      "name": "Buscar campanhas",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -316,7 +327,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1.1,
       "position": [
-        1456,
+        1680,
         -192
       ],
       "id": "568588e3-ec85-4afe-b913-e6a294771ef2",
@@ -329,7 +340,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1664,
+        1888,
         -192
       ],
       "id": "81a83edd-618f-4572-a6c7-56626bcab747",
@@ -343,14 +354,33 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1.1,
       "position": [
-        1008,
+        1232,
         -192
       ],
       "id": "063dd829-5b31-4ba0-b642-aa8d5dffcdd0",
       "name": "Separar campanhas"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "225nuis0hVOdMsiI",
+          "mode": "list",
+          "cachedResultName": "config",
+          "cachedResultUrl": "/projects/2hyPq5z2Kdzj8z72/datatables/225nuis0hVOdMsiI"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        -192
+      ],
+      "id": "f88564b0-c149-4bd2-8f69-9cfc5cdf2a93",
+      "name": "Ler config"
     }
   ],
-  "pinData": {},
   "connections": {
     "When clicking ‘Execute workflow’": {
       "main": [
@@ -427,7 +457,7 @@
       "main": [
         [
           {
-            "node": "Buscar campanhas",
+            "node": "Ler config",
             "type": "main",
             "index": 0
           }
@@ -493,23 +523,51 @@
           }
         ]
       ]
+    },
+    "Ler config": {
+      "main": [
+        [
+          {
+            "node": "Buscar campanhas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "timeSavedMode": "fixed",
     "timezone": "America/Sao_Paulo",
     "callerPolicy": "workflowsFromSameOwner",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "errorWorkflow": "lxBL1nSRFEtG95Qd"
   },
-  "versionId": "6a22fa18-0c27-418b-9152-7dc1804d72b8",
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "273beb66f70e114ffa2b73a068704a4b2db0b4c791c1df4a2103b87573c6cff9"
+    "templateCredsSetupCompleted": true
   },
   "nodeGroups": [],
-  "id": "EzjZwwyHgcFC4oVD",
-  "tags": []
+  "pinData": {},
+  "versionId": "015eae4e-4ebc-47aa-8b46-ae88a18105be",
+  "activeVersionId": "015eae4e-4ebc-47aa-8b46-ae88a18105be",
+  "versionCounter": 58,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "versionMetadata": {
+    "name": "Version 015eae4e",
+    "description": ""
+  }
 }

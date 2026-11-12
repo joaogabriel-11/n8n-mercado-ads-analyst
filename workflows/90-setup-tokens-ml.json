@@ -1,5 +1,11 @@
 {
+  "updatedAt": "2026-11-12T17:08:10.066Z",
+  "createdAt": "2026-11-12T12:06:30.408Z",
+  "id": "PKQzJzkgbIl2GzcQ",
   "name": "90 - Setup tokens ML",
+  "description": null,
+  "active": false,
+  "isArchived": false,
   "nodes": [
     {
       "parameters": {},
@@ -54,7 +60,7 @@
             },
             {
               "name": "code",
-              "value": "TG-6af5b13c4af4ca0001a51980-1096707649"
+              "value": "COLE_SEU_CODIGO_TG_AQUI"
             },
             {
               "name": "redirect_uri",
@@ -166,7 +172,6 @@
       "name": "Update row(s)"
     }
   ],
-  "pinData": {},
   "connections": {
     "When clicking ‘Execute workflow’": {
       "main": [
@@ -202,16 +207,22 @@
       ]
     }
   },
-  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "6b1667a0-984e-4768-8390-2444fd69c168",
-  "meta": {
-    "instanceId": "273beb66f70e114ffa2b73a068704a4b2db0b4c791c1df4a2103b87573c6cff9"
-  },
+  "staticData": null,
+  "meta": null,
   "nodeGroups": [],
-  "id": "PKQzJzkgbIl2GzcQ",
-  "tags": []
+  "pinData": {},
+  "versionId": "cc73766a-d867-43e7-94a8-3049dbaaa486",
+  "activeVersionId": null,
+  "versionCounter": 35,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
 }

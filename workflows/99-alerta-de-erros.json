@@ -1,0 +1,135 @@
+{
+  "updatedAt": "2026-11-12T17:06:34.586Z",
+  "createdAt": "2026-11-12T16:33:45.329Z",
+  "id": "lxBL1nSRFEtG95Qd",
+  "name": "99 - Alerta de erros",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "036704f3-d747-405e-b368-34639a398f54",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const esc = (t) => String(t ?? '')\n  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\nconst exec = $json.execution || {};\nconst wf = $json.workflow || {};\nconst erro = String(exec.error?.message || 'Erro desconhecido').slice(0, 500);\n\n// Dica de diagnóstico conforme o tipo de erro\nlet dica = 'Abra a execução no n8n para ver os detalhes.';\nif (/invalid_grant|401|unauthorized/i.test(erro)) {\n  dica = 'Provável problema de token. Rode o 02; se falhar, refaça a autorização com o 90.';\n} else if (/429|quota|rate/i.test(erro)) {\n  dica = 'Limite de requisições atingido. Tente rodar de novo mais tarde.';\n} else if (/ENOTFOUND|ECONNRESET|ETIMEDOUT|timeout|5\\d\\d/i.test(erro)) {\n  dica = 'Falha de conexão ou instabilidade da API. Tente rodar de novo.';\n}\n\nconst msg =\n  `🚨 <b>Falha no workflow</b>\\n\\n` +\n  `<b>Workflow:</b> ${esc(wf.name)}\\n` +\n  `<b>Nó:</b> ${esc(exec.lastNodeExecuted)}\\n` +\n  `<b>Erro:</b> ${esc(erro)}\\n` +\n  `<b>Quando:</b> ${$now.toFormat('dd/MM/yyyy HH:mm')}\\n` +\n  `<b>Execução:</b> ${exec.id ?? '-'}\\n\\n` +\n  `💡 ${dica}`;\n\nreturn [{ json: { mensagem: msg } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "8c8b11ce-0a7a-4d6d-8fd3-5d8ad49c6a57",
+      "name": "Montar alerta"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $('Montar alerta').first().json.mensagem }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "b7a956bd-9664-42df-8c91-ac86f6931d44",
+      "name": "Send a text message",
+      "webhookId": "6ba1ab2a-2b06-4f27-80f1-1eed51d22769",
+      "credentials": {
+        "telegramApi": {
+          "id": "8Qgz7thwuqYftEQY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "225nuis0hVOdMsiI",
+          "mode": "list",
+          "cachedResultName": "config",
+          "cachedResultUrl": "/projects/2hyPq5z2Kdzj8z72/datatables/225nuis0hVOdMsiI"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "05755724-3579-4218-9e0f-b66745523a65",
+      "name": "Ler config"
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Montar alerta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar alerta": {
+      "main": [
+        [
+          {
+            "node": "Ler config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler config": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "0f4a00bf-b409-425f-a883-adf7a9a8b7a5",
+  "activeVersionId": "0f4a00bf-b409-425f-a883-adf7a9a8b7a5",
+  "versionCounter": 14,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "versionMetadata": {
+    "name": "Version 0f4a00bf",
+    "description": ""
+  }
+}

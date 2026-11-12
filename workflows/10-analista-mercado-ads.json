@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T17:05:28.357Z",
+  "updatedAt": "2026-11-12T17:45:41.352Z",
   "createdAt": "2026-11-12T13:16:33.724Z",
   "id": "EzjZwwyHgcFC4oVD",
   "name": "10 - Analista Mercado Ads",
@@ -72,8 +72,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2448,
-        80
+        2432,
+        64
       ],
       "id": "462ac1da-344b-4504-a5fd-ee2b1dbffc20",
       "name": "Send a text message",
@@ -150,8 +150,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2240,
-        80
+        2224,
+        160
       ],
       "id": "2ce71148-e41b-4ce0-8bfd-021cec2f9870",
       "name": "Montar resumo"
@@ -379,6 +379,228 @@
       ],
       "id": "f88564b0-c149-4bd2-8f69-9cfc5cdf2a93",
       "name": "Ler config"
+    },
+    {
+      "parameters": {
+        "jsCode": "const dados = $('Calcular métricas').all().map(i => i.json);\n\n// Respostas da IA, indexadas pelo item_id\nlet filtrados = [], ia = [];\ntry {\n  filtrados = $('Filter').all().map(i => i.json);\n  ia = $('Basic LLM Chain').all().map(i => i.json.output);\n} catch (e) {}\nconst iaPorItem = {};\nfiltrados.forEach((a, i) => { if (ia[i]) iaPorItem[a.item_id] = ia[i]; });\n\nconst data = $now.toFormat('yyyy-MM-dd');\nconst janela_inicio = $now.minus({ days: 17 }).toFormat('yyyy-MM-dd');\nconst janela_fim = $now.minus({ days: 3 }).toFormat('yyyy-MM-dd');\n\nreturn dados.map(a => ({ json: {\n  data, janela_inicio, janela_fim,\n  item_id: a.item_id,\n  anuncio: a.anuncio,\n  campanha: a.campanha,\n  cliques: a.cliques,\n  impressoes: a.impressoes,\n  investimento: a.investimento,\n  vendas_ads: a.vendas_ads,\n  unidades: a.unidades,\n  cpc: a.cpc,\n  roas_real: a.roas_real,\n  roas_alvo: a.roas_minimo,\n  status: a.status,\n  acao_ia: iaPorItem[a.item_id]?.acao || '',\n  justificativa_ia: iaPorItem[a.item_id]?.justificativa || '',\n  decisao: '',\n}}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2432,
+        368
+      ],
+      "id": "f17b4a08-23ad-4912-91d2-7484d0f2407b",
+      "name": "Preparar histórico"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "xMrc8UaOTCz7o6Y4",
+          "mode": "list",
+          "cachedResultName": "historico",
+          "cachedResultUrl": "/projects/2hyPq5z2Kdzj8z72/datatables/xMrc8UaOTCz7o6Y4"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "data",
+              "displayName": "data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "janela_inicio",
+              "displayName": "janela_inicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "janela_fim",
+              "displayName": "janela_fim",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "item_id",
+              "displayName": "item_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "anuncio",
+              "displayName": "anuncio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "campanha",
+              "displayName": "campanha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cliques",
+              "displayName": "cliques",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "impressoes",
+              "displayName": "impressoes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "investimento",
+              "displayName": "investimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "vendas_ads",
+              "displayName": "vendas_ads",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "unidades",
+              "displayName": "unidades",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cpc",
+              "displayName": "cpc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "roas_real",
+              "displayName": "roas_real",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "roas_alvo",
+              "displayName": "roas_alvo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "acao_ia",
+              "displayName": "acao_ia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "justificativa_ia",
+              "displayName": "justificativa_ia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "decisao",
+              "displayName": "decisao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2656,
+        368
+      ],
+      "id": "de9c0d86-b4ba-4c2b-b4c0-25a13c801c41",
+      "name": "Salvar histórico"
     }
   ],
   "connections": {
@@ -436,6 +658,11 @@
         [
           {
             "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Preparar histórico",
             "type": "main",
             "index": 0
           }
@@ -534,6 +761,17 @@
           }
         ]
       ]
+    },
+    "Preparar histórico": {
+      "main": [
+        [
+          {
+            "node": "Salvar histórico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -560,14 +798,14 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "015eae4e-4ebc-47aa-8b46-ae88a18105be",
-  "activeVersionId": "015eae4e-4ebc-47aa-8b46-ae88a18105be",
-  "versionCounter": 58,
+  "versionId": "da16c532-f882-46da-a555-a7c7947a29cd",
+  "activeVersionId": "da16c532-f882-46da-a555-a7c7947a29cd",
+  "versionCounter": 76,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
   "versionMetadata": {
-    "name": "Version 015eae4e",
+    "name": "Version da16c532",
     "description": ""
   }
 }

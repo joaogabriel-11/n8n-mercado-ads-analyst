@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        16,
-        80
+        32,
+        0
       ],
       "id": "f6125aa7-3e2b-4ae4-a5d6-b8490c0fa511",
       "name": "When clicking ‘Execute workflow’"
@@ -55,7 +55,7 @@
     },
     {
       "parameters": {
-        "chatId": "6704486069",
+        "chatId": "SEU_CHAT_ID",
         "text": "={{ $json.mensagem }}",
         "additionalFields": {
           "appendAttribution": false,
@@ -194,26 +194,6 @@
       ],
       "id": "0efc992f-4e72-4902-bfb3-18ac78ab07b0",
       "name": "Montar resumo"
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "minutes",
-              "minutesInterval": 2
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.4,
-      "position": [
-        16,
-        -80
-      ],
-      "id": "f59eff96-6056-4128-be5a-5d920694e763",
-      "name": "Schedule Trigger"
     }
   ],
   "pinData": {},
@@ -305,17 +285,6 @@
           }
         ]
       ]
-    },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "Get row(s) in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "active": false,
@@ -327,7 +296,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "cd42ce23-8c2e-4694-92de-dd18aa4a311d",
+  "versionId": "8995bf33-386f-4400-87ed-3e9730903462",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "273beb66f70e114ffa2b73a068704a4b2db0b4c791c1df4a2103b87573c6cff9"

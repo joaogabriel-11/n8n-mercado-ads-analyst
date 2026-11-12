@@ -1,0 +1,104 @@
+{
+  "name": "02 - Teste API ML",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ee9513c0-689b-448c-9ca3-94f4dd729569",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.mercadolibre.com/users/me",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "e947c2a4-24ea-49b2-9068-ebb718e4137a",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "1pDUiukwk46aRM1W",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/1pDUiukwk46aRM1W",
+          "cachedResultName": "91 - Obter token ML"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "635ac31d-024d-4ab0-9b79-ec8c730b8b31",
+      "name": "Call '91 - Obter token ML'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Call '91 - Obter token ML'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call '91 - Obter token ML'": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9b16f1ec-e57a-44ff-a523-fe40eb45e721",
+  "meta": {
+    "instanceId": "273beb66f70e114ffa2b73a068704a4b2db0b4c791c1df4a2103b87573c6cff9"
+  },
+  "nodeGroups": [],
+  "id": "sIpZVkWCMERcOFa7",
+  "tags": []
+}

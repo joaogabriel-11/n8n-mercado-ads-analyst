@@ -51,7 +51,7 @@ Cada anúncio recebe um status calculado **por código, não por IA**:
 | Status | Regra |
 |---|---|
 | `sem_entrega` | 0 impressões no período |
-| `dados_insuficientes` | menos de 30 cliques **e** menos de R$ 50 gastos |
+| `dados_insuficientes` | menos de 130 cliques **e** menos de R$ 50 gastos |
 | `abaixo_do_minimo` | ROAS real abaixo do ROAS alvo da campanha → **vai para a IA** |
 | `candidato_escala` | na Teste, com ROAS ≥ 1,5× o alvo → **vai para a IA** |
 | `saudavel` | dentro do esperado |
